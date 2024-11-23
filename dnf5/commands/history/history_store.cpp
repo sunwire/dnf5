@@ -26,6 +26,8 @@ along with libdnf.  If not, see <https://www.gnu.org/licenses/>.
 #include <libdnf5/utils/bgettext/bgettext-mark-domain.h>
 #include <libdnf5/utils/fs/temp.hpp>
 
+#define USERCONFIRM_MSG _("Is this ok"), _("y"), _("n"), _("Y"), _("N")
+
 namespace dnf5 {
 
 using namespace libdnf5::cli;
@@ -79,7 +81,7 @@ void HistoryStoreCommand::run() {
         std::cerr << libdnf5::utils::sformat(
             _("File \"{}\" already exists, it will be overwritten.\n"), trans_file_path.string());
         // ask user for the file overwrite confirmation
-        if (!libdnf5::cli::utils::userconfirm::userconfirm(get_context().get_base().get_config())) {
+        if (!libdnf5::cli::utils::userconfirm::userconfirm(get_context().get_base().get_config(), USERCONFIRM_MSG)) {
             throw libdnf5::cli::AbortedByUserError();
         }
     }

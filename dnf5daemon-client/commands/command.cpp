@@ -31,9 +31,12 @@ along with libdnf.  If not, see <https://www.gnu.org/licenses/>.
 #include <libdnf5-cli/output/transaction_table.hpp>
 #include <libdnf5-cli/utils/userconfirm.hpp>
 #include <libdnf5/base/goal.hpp>
+#include <libdnf5/utils/bgettext/bgettext-lib.h>
 
 #include <iostream>
 #include <vector>
+
+#define USERCONFIRM_MSG _("Is this ok"), _("y"), _("n"), _("Y"), _("N")
 
 namespace dnfdaemon::client {
 
@@ -74,7 +77,7 @@ void TransactionCommand::run_transaction(bool offline) {
         return;
     }
 
-    if (!libdnf5::cli::utils::userconfirm::userconfirm(ctx)) {
+    if (!libdnf5::cli::utils::userconfirm::userconfirm(ctx, USERCONFIRM_MSG)) {
         throw libdnf5::cli::AbortedByUserError();
     }
 

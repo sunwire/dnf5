@@ -31,6 +31,7 @@ along with libdnf.  If not, see <https://www.gnu.org/licenses/>.
 #include <fstream>
 #include <string>
 
+#define USERCONFIRM_MSG _("Is this ok"), _("y"), _("n"), _("Y"), _("N")
 
 namespace dnf5 {
 
@@ -400,7 +401,7 @@ std::string CoprRepo::get_projectname() {
 
 void CoprRepo::save_interactive() {
     std::cerr << COPR_THIRD_PARTY_WARNING;
-    if (!libdnf5::cli::utils::userconfirm::userconfirm(base->get_config()))
+    if (!libdnf5::cli::utils::userconfirm::userconfirm(base->get_config(), USERCONFIRM_MSG))
         return;
 
     if (has_external_deps()) {
@@ -423,7 +424,7 @@ void CoprRepo::save_interactive() {
         std::cerr << std::endl;
         std::cerr << libdnf5::utils::sformat(COPR_EXTERNAL_DEPS_WARNING, the_list.str());
         std::cerr << std::endl;
-        if (!libdnf5::cli::utils::userconfirm::userconfirm(base->get_config())) {
+        if (!libdnf5::cli::utils::userconfirm::userconfirm(base->get_config(), USERCONFIRM_MSG)) {
             for (auto & p : repositories) {
                 auto & repo = p.second;
                 if (!repo.is_external())

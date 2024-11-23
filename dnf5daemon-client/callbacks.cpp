@@ -27,9 +27,12 @@ along with libdnf.  If not, see <https://www.gnu.org/licenses/>.
 #include <libdnf5-cli/utils/userconfirm.hpp>
 #include <libdnf5/repo/download_callbacks.hpp>
 #include <libdnf5/repo/package_downloader.hpp>
+#include <libdnf5/utils/bgettext/bgettext-lib.h>
 #include <sdbus-c++/sdbus-c++.h>
 
 #include <string>
+
+#define USERCONFIRM_MSG _("Is this ok"), _("y"), _("n"), _("Y"), _("N")
 
 namespace dnfdaemon::client {
 
@@ -224,7 +227,7 @@ void DownloadCB::key_import(sdbus::Signal & signal) {
         std::cerr << " From       : " + url << std::endl;
 
         // ask user for the key import confirmation
-        auto confirmed = libdnf5::cli::utils::userconfirm::userconfirm(context);
+        auto confirmed = libdnf5::cli::utils::userconfirm::userconfirm(context, USERCONFIRM_MSG);
 
         // signal the confirmation back to the server
         try {

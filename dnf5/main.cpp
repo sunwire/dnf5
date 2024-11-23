@@ -87,6 +87,8 @@ along with libdnf.  If not, see <https://www.gnu.org/licenses/>.
 #include <iostream>
 #include <utility>
 
+#define USERCONFIRM_MSG _("Is this ok"), _("y"), _("n"), _("Y"), _("N")
+
 constexpr const char * DNF5_LOGGER_FILENAME = "dnf5.log";
 
 namespace dnf5 {
@@ -1466,7 +1468,7 @@ int main(int argc, char * argv[]) try {
                     }
                 }
 
-                if (!libdnf5::cli::utils::userconfirm::userconfirm(context.get_base().get_config())) {
+                if (!libdnf5::cli::utils::userconfirm::userconfirm(context.get_base().get_config(), USERCONFIRM_MSG)) {
                     throw libdnf5::cli::AbortedByUserError();
                 }
 

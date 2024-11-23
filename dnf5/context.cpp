@@ -52,6 +52,8 @@ along with libdnf.  If not, see <https://www.gnu.org/licenses/>.
 #include <tuple>
 #include <utility>
 
+#define USERCONFIRM_MSG _("Is this ok"), _("y"), _("n"), _("Y"), _("N")
+
 namespace fs = std::filesystem;
 
 namespace dnf5 {
@@ -80,7 +82,7 @@ public:
             key_info.get_fingerprint(),
             key_info.get_url());
 
-        return libdnf5::cli::utils::userconfirm::userconfirm(*config);
+        return libdnf5::cli::utils::userconfirm::userconfirm(*config, USERCONFIRM_MSG);
     }
 
     void repokey_imported([[maybe_unused]] const libdnf5::rpm::KeyInfo & key_info) override {
@@ -413,7 +415,7 @@ void Context::Impl::download_and_run(libdnf5::base::Transaction & transaction) {
             print_error(libdnf5::utils::sformat(
                 _("Location \"{}\" already contains a stored transaction, it will be overwritten."),
                 transaction_store_path.string()));
-            if (libdnf5::cli::utils::userconfirm::userconfirm(base.get_config())) {
+            if (libdnf5::cli::utils::userconfirm::userconfirm(base.get_config(), USERCONFIRM_MSG)) {
                 std::filesystem::remove_all(packages_location);
                 std::filesystem::remove_all(comps_location);
             } else {
@@ -443,7 +445,7 @@ void Context::Impl::download_and_run(libdnf5::base::Transaction & transaction) {
             print_error(_("There is already an offline transaction queued, initiated by the following command:"));
             print_error(fmt::format("\t{}", offline_data.get_cmd_line()));
             print_error(_("Continuing will cancel the old offline transaction and replace it with this one."));
-            if (!libdnf5::cli::utils::userconfirm::userconfirm(base.get_config())) {
+            if (!libdnf5::cli::utils::userconfirm::userconfirm(base.get_config(), USERCONFIRM_MSG)) {
                 throw libdnf5::cli::AbortedByUserError();
             }
         }

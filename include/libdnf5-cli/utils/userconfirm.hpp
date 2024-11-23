@@ -21,6 +21,7 @@ along with libdnf.  If not, see <https://www.gnu.org/licenses/>.
 #define LIBDNF5_CLI_UTILS_USERCONFIRM_HPP
 
 #include <libdnf5/conf/config_main.hpp>
+#include <libdnf5/utils/format.hpp>
 
 #include <iostream>
 #include <string>
@@ -30,7 +31,13 @@ namespace libdnf5::cli::utils::userconfirm {
 /// Asks the user for confirmation. The default answer is taken from the configuration.
 
 template <class Config>
-bool userconfirm(Config & config) {
+bool userconfirm(
+    Config & config,
+    std::string question,
+    std::string lower_yes,
+    std::string lower_no,
+    std::string upper_yes,
+    std::string upper_no) {
     // "assumeno" takes precedence over "assumeyes"
     if (config.get_assumeno_option().get_value()) {
         return false;
@@ -40,9 +47,9 @@ bool userconfirm(Config & config) {
     }
     std::string msg;
     if (config.get_defaultyes_option().get_value()) {
-        msg = "Is this ok [Y/n]: ";
+        msg = fmt::format("{} [{}/{}]: ", question, upper_yes, lower_no);
     } else {
-        msg = "Is this ok [y/N]: ";
+        msg = fmt::format("{} [{}/{}]: ", question, lower_yes, upper_no);
     }
     while (true) {
         std::cerr << msg;
@@ -53,10 +60,10 @@ bool userconfirm(Config & config) {
         if (choice.empty()) {
             return config.get_defaultyes_option().get_value();
         }
-        if (choice == "y" || choice == "Y") {
+        if (choice == lower_yes || choice == upper_yes) {
             return true;
         }
-        if (choice == "n" || choice == "N") {
+        if (choice == lower_no || choice == upper_no) {
             return false;
         }
     }

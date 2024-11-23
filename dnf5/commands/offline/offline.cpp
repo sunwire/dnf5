@@ -44,6 +44,8 @@ along with libdnf.  If not, see <https://www.gnu.org/licenses/>.
 #include <iostream>
 #include <string>
 
+#define USERCONFIRM_MSG _("Is this ok"), _("y"), _("n"), _("Y"), _("N")
+
 using namespace libdnf5::cli;
 
 const std::string & ID_TO_IDENTIFY_BOOTS = libdnf5::offline::OFFLINE_STARTED_ID;
@@ -341,7 +343,7 @@ void OfflineRebootCommand::run() {
             << std::endl
             << "\t" << offline_data.get_cmd_line() << std::endl;
     }
-    if (!libdnf5::cli::utils::userconfirm::userconfirm(ctx.get_base().get_config())) {
+    if (!libdnf5::cli::utils::userconfirm::userconfirm(ctx.get_base().get_config(), USERCONFIRM_MSG)) {
         return;
     }
 
